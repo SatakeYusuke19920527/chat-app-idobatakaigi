@@ -1,5 +1,5 @@
 import { getApps, initializeApp } from 'firebase/app'
-import { getAuth,GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
@@ -21,3 +21,80 @@ if (!apps.length) {
 export const auth = getAuth();
 export const db = getFirestore();
 export const provider = new GoogleAuthProvider();
+
+/**
+ * ユーザー登録
+ * @param email 
+ * @param password 
+ */
+export const createUser = async (email: string, password: string) => {
+  await createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("🚀 ~ file: firebase.ts ~ line 27 ~ .then ~ user", user)
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      console.log("🚀 ~ file: firebase.ts ~ line 37 ~ createUser ~ errorCode", errorCode)
+      const errorMessage = error.message;
+      console.log("🚀 ~ file: firebase.ts ~ line 31 ~ createUser ~ errorCode", errorCode)
+      console.log("🚀 ~ file: firebase.ts ~ line 39 ~ createUser ~ errorCode", errorCode)
+      console.log("🚀 ~ file: firebase.ts ~ line 39 ~ createUser ~ errorCode", errorCode)
+      console.log("🚀 ~ file: firebase.ts ~ line 33 ~ createUser ~ errorMessage", errorMessage)
+    });
+}
+
+/**
+ * ログイン
+ * @param email 
+ * @param password 
+ */
+export const loginUser = async (email: string, password: string) => {
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("🚀 ~ file: firebase.ts ~ line 55 ~ .then ~ user", user)
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log("🚀 ~ file: firebase.ts ~ line 60 ~ loginUser ~ errorCode", errorCode)
+      console.log("🚀 ~ file: firebase.ts ~ line 61 ~ loginUser ~ errorMessage", errorMessage)
+    });
+};
+
+/**
+ * ログアウト
+ */
+export const logoutUser = async () => {
+  const auth = getAuth();
+  signOut(auth).then(() => {
+    // Sign-out successful.
+    console.log("user sign-out")
+  }).catch((error) => {
+    // An error happened.
+    console.log("user sign-out error ", error.message)
+  });
+};
+
+/**
+ * Google ログイン
+ */
+export const googleLogin = () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      console.log("🚀 ~ file: firebase.ts ~ line 88 ~ .then ~ credential", credential)
+      // The signed-in user info.
+      const user = result.user;
+      console.log("🚀 ~ file: firebase.ts ~ line 91 ~ .then ~ user", user)
+      // ...
+    }).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      console.log("🚀 ~ file: firebase.ts ~ line 96 ~ .then ~ errorCode", errorCode)
+      const errorMessage = error.message;
+      console.log("🚀 ~ file: firebase.ts ~ line 98 ~ .then ~ errorMessage", errorMessage)
+    });
+}
