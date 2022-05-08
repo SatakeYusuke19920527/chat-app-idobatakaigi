@@ -1,6 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app'
 import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -105,4 +105,24 @@ export const googleLogin = () => {
       const errorMessage = error.message;
       console.log("🚀 ~ file: firebase.ts ~ line 98 ~ .then ~ errorMessage", errorMessage)
     });
+}
+
+/**
+ * 
+ * @param name 
+ * @param message 
+ */
+export const createDataInFirebase = async (name: string, message: string) => {
+  console.log('firebase start', name, message)
+  try {
+    const docRef = await addDoc(collection(db, "messages"), {
+      name: name,
+      message: message,
+      time: serverTimestamp()
+    });
+    console.log("Document written with ID:", docRef.id);
+  } catch (e) {
+    console.log('firebase start2')
+    console.error("Error adding document: ", e);
+  }
 }
