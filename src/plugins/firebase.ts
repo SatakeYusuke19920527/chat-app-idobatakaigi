@@ -1,6 +1,6 @@
 import { getApps, initializeApp } from 'firebase/app'
-import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"
+import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -27,21 +27,29 @@ export const provider = new GoogleAuthProvider();
  * @param email 
  * @param password 
  */
-export const createUser = async (email: string, password: string) => {
+export const createUser = async (name: string, email: string, password: string) => {
   await createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user;
+      updateUser(name)
       console.log("🚀 ~ file: firebase.ts ~ line 27 ~ .then ~ user", user)
     })
     .catch((error) => {
       const errorCode = error.code;
-      console.log("🚀 ~ file: firebase.ts ~ line 37 ~ createUser ~ errorCode", errorCode)
       const errorMessage = error.message;
       console.log("🚀 ~ file: firebase.ts ~ line 31 ~ createUser ~ errorCode", errorCode)
-      console.log("🚀 ~ file: firebase.ts ~ line 39 ~ createUser ~ errorCode", errorCode)
-      console.log("🚀 ~ file: firebase.ts ~ line 39 ~ createUser ~ errorCode", errorCode)
       console.log("🚀 ~ file: firebase.ts ~ line 33 ~ createUser ~ errorMessage", errorMessage)
     });
+}
+
+const updateUser = async (name: string) => {
+  await updateProfile(auth.currentUser!, {
+    displayName: name
+  }).then((user) => {
+    console.log("🚀 ~ file: firebase.ts ~ line 27 ~ .then ~ user", user)
+  }).catch((error) => {
+    console.log("🚀 ~ file: firebase.ts ~ line 51 ~ updateUser ~ error", error)
+  });
 }
 
 /**
@@ -97,4 +105,24 @@ export const googleLogin = () => {
       const errorMessage = error.message;
       console.log("🚀 ~ file: firebase.ts ~ line 98 ~ .then ~ errorMessage", errorMessage)
     });
+}
+
+/**
+ * 
+ * @param name 
+ * @param message 
+ */
+export const createDataInFirebase = async (name: string, message: string) => {
+  console.log('firebase start', name, message)
+  try {
+    const docRef = await addDoc(collection(db, "messages"), {
+      name: name,
+      message: message,
+      time: serverTimestamp()
+    });
+    console.log("Document written with ID:", docRef.id);
+  } catch (e) {
+    console.log('firebase start2')
+    console.error("Error adding document: ", e);
+  }
 }

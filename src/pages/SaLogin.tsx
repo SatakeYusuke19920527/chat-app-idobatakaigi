@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,7 +11,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { googleLogin } from "../plugins/firebase"
+import { loginUser, createUser, googleLogin } from "../plugins/firebase"
+import { useLoginCheck } from '../hooks/useLoginCheck';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props: any) {
   return (
@@ -30,14 +32,30 @@ const theme = createTheme();
 
 export default function SaLogin() {
   const [isCreateUser, setIsCreateUser] = useState<boolean>(false)
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+  const isLogin = useLoginCheck()
+  const [name, setName] = useState<string>('')
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/sachat');
+    }
+  }, [isLogin, navigate]);
+
+  const handleSignInOrCreateUser = () => {
+    console.log("🚀 ~ file: SaLogin.tsx ~ line 34 ~ SaLogin ~ name", name)
+    console.log("🚀 ~ file: SaLogin.tsx ~ line 35 ~ SaLogin ~ email", email)
+    console.log("🚀 ~ file: SaLogin.tsx ~ line 37 ~ SaLogin ~ password", password)
+
+    if (isCreateUser) {
+      if (name === "" || email === "" || password === "") return
+      createUser(name, email, password)
+    } else {
+      if (email === "" || password === "") return
+      loginUser(email, password)
+    }
+  }
 
   const handleGoogleLogin = async () => {
     await googleLogin()
@@ -82,97 +100,99 @@ export default function SaLogin() {
                   "Sign Up"
               }
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            {
+              isCreateUser ? (
+                <>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="name"
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    onChange={e => setName(e.target.value)}
+                    autoFocus
+                  />
+                  <Box
+                    sx={{
+                      my: 1,
+                      mx: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: "pointer" }}>
+                      <AccountCircle />
+                    </Avatar>
+                  </Box>
+                </>
+              ) : null
+            }
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              onChange={e => setEmail(e.target.value)}
+              autoFocus
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              onChange={e => setPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={handleSignInOrCreateUser}
+              sx={{ mt: 3, mb: 2 }}
+            >
               {
-                isCreateUser ? (
-                  <>
-                    <TextField
-                      margin="normal"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Name"
-                      name="name"
-                      autoComplete="name"
-                      autoFocus
-                    />
-                    <Box
-                      sx={{
-                        my: 1,
-                        mx: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: "pointer" }}>
-                        <AccountCircle />
-                      </Avatar>
-                    </Box>
-                  </>
-                ) : null
+                isCreateUser ?
+                  "Create User"
+                  :
+                  "Sign Up"
               }
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                {
-                  isCreateUser ?
-                    "Create User"
-                    :
-                    "Sign Up"
-                }
-              </Button>
-              <Button
-                fullWidth
-                variant="contained"
-                color="error"
-                onClick={handleGoogleLogin}
-                sx={{ mt: 2, mb: 2 }}
-              >
-                Google Login
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item sx={{ cursor: "pointer" }}>
-                  <Link onClick={() => setIsCreateUser(!isCreateUser)} variant="body2">
-                    {
-                      isCreateUser ?
-                        "Sign Up"
-                        :
-                        "Create User"
-                    }
-                  </Link>
-                </Grid>
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              color="error"
+              onClick={handleGoogleLogin}
+              sx={{ mt: 2, mb: 2 }}
+            >
+              Google Login
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
-            </Box>
+              <Grid item sx={{ cursor: "pointer" }}>
+                <Link onClick={() => setIsCreateUser(!isCreateUser)} variant="body2">
+                  {
+                    isCreateUser ?
+                      "Sign Up"
+                      :
+                      "Create User"
+                  }
+                </Link>
+              </Grid>
+            </Grid>
+            <Copyright sx={{ mt: 5 }} />
           </Box>
         </Grid>
       </Grid>

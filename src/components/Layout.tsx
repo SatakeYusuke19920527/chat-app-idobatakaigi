@@ -1,6 +1,15 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
+import { useLoginCheck } from '../hooks/useLoginCheck';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Layout.css';
 const Layout = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
+  const isLogin = useLoginCheck();
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/');
+    }
+  }, [isLogin, navigate]);
   return (
     <section className="layout-wrapper">
       <main>{children}</main>
