@@ -1,0 +1,32 @@
+.app-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.menu-area {
+  display: block;
+}
+
+.individual-page-junta {
+  color: plum;
+  cursor: pointer;
+}
+
+.individual-page-utoken {
+  color: salmon;
+  cursor: pointer;
+}
+
+.individual-page-keisuke {
+  color: rgb(58, 226, 43);
+  cursor: pointer;
+}
+
+.individual-page-satake {
+  color: royalblue;
+  cursor: pointer;
+}
