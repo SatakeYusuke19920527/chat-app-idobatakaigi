@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { logoutUser } from '../plugins/firebase'
 import { selectUser } from '../features/userSlice';
@@ -8,11 +8,20 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Send from '@mui/icons-material/Send';
 import { createDataInFirebase } from '../plugins/firebase';
+import { useLoginCheck } from '../hooks/useLoginCheck';
+import { useNavigate } from 'react-router-dom';
 import "../styles/SaChat.css"
 
 const SaChat = () => {
   const user: UserType = useAppSelector(selectUser);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const isLogin = useLoginCheck();
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/salogin');
+    }
+  }, [isLogin, navigate]);
   const sendMessage = async () => {
     await createDataInFirebase(user.displayName, message)
     setMessage('')

@@ -39,6 +39,13 @@ const Home = () => {
           Satake's Page
         </h2>
         <hr />
+        <h2
+          onClick={() => movePage('wklogin')}
+          className="individual-page-kengo"
+        >
+          Kengo's Page
+        </h2>
+        <hr />
       </div>
     </Layout>
   );
