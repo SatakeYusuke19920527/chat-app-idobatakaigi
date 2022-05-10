@@ -71,6 +71,25 @@ export const loginUser = async (email: string, password: string) => {
     });
 };
 
+export const loginUserKe = async (email: string, password: string): Promise<string> => {
+  let returnObj: string = ""
+  await signInWithEmailAndPassword(auth, email, password)
+     .then((userCredential) => {
+       const user = userCredential.user;
+       console.log("🚀 ~ file: firebase.ts ~ line 55 ~ .then ~ user", user)
+   returnObj = "ログインに成功しました。"
+     })
+     .catch((error) => {
+       const errorCode = error.code;
+       const errorMessage = error.message;
+       console.log("🚀 ~ file: firebase.ts ~ line 60 ~ loginUser ~ errorCode", errorCode)
+       console.log("🚀 ~ file: firebase.ts ~ line 61 ~ loginUser ~ errorMessage", errorMessage)
+   returnObj = "ログイン失敗しました。"
+     });
+   return returnObj
+ };
+
+
 /**
  * ログアウト
  */

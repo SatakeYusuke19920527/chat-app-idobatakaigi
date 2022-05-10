@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import KeLayout from "../components/LayoutKe";
 import { useNavigate } from "react-router-dom";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
-import { loginUser } from "../plugins/firebase";
+import { loginUser, loginUserKe } from "../plugins/firebase";
 import { useLoginCheck } from "../hooks/useLoginCheck";
 
 const KeLogin = () => {
@@ -20,14 +20,14 @@ const KeLogin = () => {
     }
   }, [isLogin, navigate]);
 
-  const login = (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     refleshErrorMessage();
 
     if (email === "" || password === "") {
       setErrorMessage("メールアドレスとパスワードは必須です");
       return;
     }
-    loginUser(email, password);
+    setErrorMessage(await loginUserKe(email, password));
   };
 
   const refleshErrorMessage = () => {
