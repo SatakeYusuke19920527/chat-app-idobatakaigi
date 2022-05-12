@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Layout from '../components/Layout'
 import { logoutUser } from '../plugins/firebase'
 import { selectUser } from '../features/userSlice';
@@ -7,23 +7,37 @@ import { UserType } from '../types/UserType';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Send from '@mui/icons-material/Send';
-import { createDataInFirebase } from '../plugins/firebase';
-import { useLoginCheck } from '../hooks/useLoginCheck';
-import { useNavigate } from 'react-router-dom';
+import { db, createDataInFirebase } from '../plugins/firebase';
+import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import MessageCard from '../components/MessageCard';
 import "../styles/SaChat.css"
 
 const SaChat = () => {
   const user: UserType = useAppSelector(selectUser);
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
-  const isLogin = useLoginCheck();
+  const [chatData, setChatData] = useState<any[]>([])
+  const scrollBottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (!isLogin) {
-      navigate('/salogin');
+    const q = query(collection(db, "messages"), orderBy("time", "asc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const messagesInfo: any[] = [];
+      querySnapshot.forEach((doc) => {
+        messagesInfo.push(doc.data());
+      });
+      setChatData(messagesInfo)
+    });
+    return unsubscribe
+  }, []);
+  useLayoutEffect(() => {
+    scrollBottomRef.current!.scrollIntoView({ behavior: 'smooth' });
+  }, [chatData])
+  useEffect(() => {
+    if (user.displayName === null) {
+
     }
-  }, [isLogin, navigate]);
+  }, [user])
   const sendMessage = async () => {
-    await createDataInFirebase(user.displayName, message)
+    await createDataInFirebase(user.displayName, message, user.photoUrl)
     setMessage('')
   }
   return (
@@ -38,7 +52,23 @@ const SaChat = () => {
           </button>
         </header>
         <main className="sc-main">
-          <h1>message area</h1>
+          <div
+            className="show-message-area"
+          >
+            {
+              chatData.map((chat, index) => {
+                return (
+                  <MessageCard
+                    key={index}
+                    name={chat.name}
+                    photoUrl={chat.photoUrl}
+                    message={chat.message}
+                  />
+                )
+              })
+            }
+            <div ref={scrollBottomRef}></div>
+          </div>
         </main>
         <footer className='sc-footer'>
           <div className="textfield-area">

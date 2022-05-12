@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { UserType } from '../types/UserType';
 
@@ -6,7 +6,7 @@ type InitialStateType = {
   value: UserType
 }
 
-const initialState:InitialStateType = {
+const initialState: InitialStateType = {
   value: {
     uid: "",
     email: "",
@@ -25,7 +25,7 @@ export const userSlice = createSlice({
     logout: (state) => {
       state.value = initialState.value
     },
-    updateUserProfile: (state, action: PayloadAction<UserType>) => {
+    updateUserProfile: (state, action) => {
       state.value.displayName = action.payload.displayName;
     }
   },
