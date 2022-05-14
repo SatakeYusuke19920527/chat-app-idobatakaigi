@@ -8,12 +8,13 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { loginUser, createUser, googleLogin } from "../plugins/firebase"
+import { loginUser, createUser, googleLogin, resetPassword } from "../plugins/firebase"
 import { useLoginCheck } from '../hooks/useLoginCheck';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../hooks/useRTK';
+import SaModal from '../components/SaModal';
 
 function Copyright(props: any) {
   return (
@@ -36,6 +37,7 @@ export default function SaLogin() {
   const [name, setName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const dispatch = useAppDispatch()
   const navigate = useNavigate();
   useEffect(() => {
     if (isLogin) {
@@ -43,22 +45,27 @@ export default function SaLogin() {
     }
   }, [isLogin, navigate]);
 
-  const handleSignInOrCreateUser = () => {
+  const handleSignInOrCreateUser = async () => {
     console.log("🚀 ~ file: SaLogin.tsx ~ line 34 ~ SaLogin ~ name", name)
     console.log("🚀 ~ file: SaLogin.tsx ~ line 35 ~ SaLogin ~ email", email)
     console.log("🚀 ~ file: SaLogin.tsx ~ line 37 ~ SaLogin ~ password", password)
 
     if (isCreateUser) {
       if (name === "" || email === "" || password === "") return
-      createUser(name, email, password)
+      await createUser(name, email, password, dispatch)
     } else {
       if (email === "" || password === "") return
-      loginUser(email, password)
+      await loginUser(email, password)
     }
   }
 
   const handleGoogleLogin = async () => {
     await googleLogin()
+  }
+
+  const resetPasswordByEmail = async (email: string) => {
+    await resetPassword(email)
+    window.alert("メールを送信しました。")
   }
 
   return (
@@ -114,19 +121,6 @@ export default function SaLogin() {
                     onChange={e => setName(e.target.value)}
                     autoFocus
                   />
-                  <Box
-                    sx={{
-                      my: 1,
-                      mx: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: "pointer" }}>
-                      <AccountCircle />
-                    </Avatar>
-                  </Box>
                 </>
               ) : null
             }
@@ -177,8 +171,8 @@ export default function SaLogin() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
+                <Link variant="body2">
+                  <SaModal title="Forgot password?" resetPasswordByEmail={resetPasswordByEmail} />
                 </Link>
               </Grid>
               <Grid item sx={{ cursor: "pointer" }}>
