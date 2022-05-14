@@ -1,6 +1,5 @@
 import Avatar from '@mui/material/Avatar';
 import Gravatar from 'react-gravatar'
-
 import "../styles/MessageCard.css"
 const MessageCard = ({ name, message, photoUrl }: { name: string, message: string, photoUrl: string }) => {
   const handleClick = () => {
