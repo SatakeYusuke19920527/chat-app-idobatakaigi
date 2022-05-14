@@ -1,16 +1,78 @@
-import Layout from '../components/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import KeLayout from "../components/LayoutKe";
+import { useNavigate } from "react-router-dom";
+import { Button, FormControl, Input, InputLabel } from "@mui/material";
+import { loginUser, loginUserKe } from "../plugins/firebase";
+import { useLoginCheck } from "../hooks/useLoginCheck";
 
 const KeLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const isLogin = useLoginCheck();
+
   const navigate = useNavigate();
-  const movePage = (path: string) => {
-    navigate(`/${path}`);
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/kechat");
+    }
+  }, [isLogin, navigate]);
+
+  const login = async (email: string, password: string) => {
+    refleshErrorMessage();
+
+    if (email === "" || password === "") {
+      setErrorMessage("メールアドレスとパスワードは必須です");
+      return;
+    }
+    setErrorMessage(await loginUserKe(email, password));
   };
+
+  const refleshErrorMessage = () => {
+    setErrorMessage("");
+  };
+
   return (
-    <Layout>
-      <h1>KeLogin</h1>
-      <p onClick={() => movePage('kechat')}>Keisuke's chat Page</p>
-    </Layout>
+    <KeLayout>
+      <h1>Welcome to Keisuke's Chat Page</h1>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <div>
+        <FormControl>
+          <InputLabel htmlFor="email">メールアドレス</InputLabel>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setEmail(e.target.value);
+            }}
+          />
+        </FormControl>
+      </div>
+      <div>
+        <FormControl>
+          <InputLabel htmlFor="password">パスワード</InputLabel>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setPassword(e.target.value);
+            }}
+          />
+        </FormControl>
+      </div>
+      <Button
+        variant="contained"
+        onClick={() => {
+          login(email, password);
+        }}
+      >
+        ログイン
+      </Button>
+    </KeLayout>
   );
 };
 
