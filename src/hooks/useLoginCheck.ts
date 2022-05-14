@@ -11,6 +11,8 @@ export const useLoginCheck = (): boolean => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((authUser) => {
+      console.log("🚀 ~ file: useLoginCheck.ts ~ line 14 ~ unSub ~ authUser", authUser)
+
       if (authUser) {
         dispatch(
           login({

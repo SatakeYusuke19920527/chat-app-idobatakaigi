@@ -132,6 +132,10 @@ export const createDataInFirebase = async (name: string, message: string, photoU
   }
 }
 
+/**
+ * パスワードリセット機能
+ * @param email 
+ */
 export const resetPassword = (email: string) => {
   sendPasswordResetEmail(auth, email)
     .then(() => {
