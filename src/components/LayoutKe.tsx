@@ -12,7 +12,7 @@ const KeLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [isLogin, navigate]);
   return (
-    <section className="layout-wrapper">
+    <section>
       <main>{children}</main>
     </section>
   );

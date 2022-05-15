@@ -1,12 +1,12 @@
 import { Button, Input } from "@mui/material";
-import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import LayoutKe from "../components/LayoutKe";
 import { Message } from "../models/keChatModel";
-import { db, logoutUser } from "../plugins/firebase";
+import { db } from "../plugins/firebase";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import "../styles/KeChat.css";
 import KeHeader from "../components/KeHeader";
+import KeMessage from "../components/KeMessage";
 
 const messagesRef = "keChat";
 const collectionId = "keChat";
@@ -55,41 +55,43 @@ const KeChat = () => {
 
   const renderMessages = messages.map((message, index) => {
     return (
-      <div className="message-area">
-        <ul key={index}>
-          {message.createdBy}
-          {message.content}
-        </ul>
-      </div>
+      <KeMessage
+        key={index}
+        createdBy={message.createdBy}
+        content={message.content}
+        createdAt={message.createdAt}
+      ></KeMessage>
     );
   });
 
   return (
     <LayoutKe>
-      <section className="chat-wrapper">
+      <section>
         <KeHeader />
-        <div className="message-area-wrapper">{renderMessages}</div>
-        <div className="sender-area">
-          <Input
-            className="text-area"
-            id="content"
-            type="content"
-            value={content}
-            placeholder="メッセージを入力"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setContent(e.target.value);
-            }}
-          />
-          <Button
-            variant="contained"
-            color="success"
-            disabled={content === ""}
-            onClick={() => {
-              send(content, "keisuke");
-            }}
-          >
-            送信
-          </Button>
+        <div className="chat-wrapper">
+          <div className="message-area-wrapper">{renderMessages}</div>
+          <div className="sender-area">
+            <Input
+              className="text-area"
+              id="content"
+              type="content"
+              value={content}
+              placeholder="メッセージを入力"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setContent(e.target.value);
+              }}
+            />
+            <Button
+              variant="contained"
+              color="success"
+              disabled={content === ""}
+              onClick={() => {
+                send(content, "keisuke");
+              }}
+            >
+              送信
+            </Button>
+          </div>
         </div>
         <footer></footer>
       </section>

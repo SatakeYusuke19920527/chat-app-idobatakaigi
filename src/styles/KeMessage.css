@@ -1,0 +1,12 @@
+.message-wrapper {
+    width: 100%;
+    list-style: none;
+}
+.createdBy {
+    font-size: 5px;
+    color: #a9a9a9;
+}
+.content {
+    font-size: 10px;
+    color: #000000;
+}

@@ -3,17 +3,11 @@
     height: 100vh;
 }
 .message-area-wrapper {
-    width: 100%;
-    background-color: black;
-}
-.message-area {
     width: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: white;
-}
-.message {
 }
 .sender-area {
     width: 100%;
