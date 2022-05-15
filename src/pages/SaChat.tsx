@@ -10,6 +10,8 @@ import Send from '@mui/icons-material/Send';
 import { db, createDataInFirebase } from '../plugins/firebase';
 import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import MessageCard from '../components/MessageCard';
+import { useLoginCheck } from '../hooks/useLoginCheck';
+import { useNavigate } from 'react-router-dom';
 import "../styles/SaChat.css"
 
 const SaChat = () => {
@@ -17,6 +19,13 @@ const SaChat = () => {
   const [message, setMessage] = useState("");
   const [chatData, setChatData] = useState<any[]>([])
   const scrollBottomRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const isLogin = useLoginCheck();
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/salogin');
+    }
+  }, [isLogin, navigate]);
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("time", "asc"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
