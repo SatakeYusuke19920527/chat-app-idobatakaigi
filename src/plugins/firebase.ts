@@ -1,7 +1,7 @@
 import { getApps, initializeApp } from 'firebase/app'
-import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+import { getAuth, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore'
-
+import { updateUserProfile } from '../features/userSlice'
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -27,11 +27,11 @@ export const provider = new GoogleAuthProvider();
  * @param email 
  * @param password 
  */
-export const createUser = async (name: string, email: string, password: string) => {
+export const createUser = async (name: string, email: string, password: string, dispatch: any) => {
   await createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       const user = userCredential.user;
-      updateUser(name)
+      await updateUser(name, dispatch)
       console.log("🚀 ~ file: firebase.ts ~ line 27 ~ .then ~ user", user)
     })
     .catch((error) => {
@@ -42,11 +42,15 @@ export const createUser = async (name: string, email: string, password: string) 
     });
 }
 
-const updateUser = async (name: string) => {
+const updateUser = async (name: string, dispatch: any) => {
   await updateProfile(auth.currentUser!, {
     displayName: name
-  }).then((user) => {
-    console.log("🚀 ~ file: firebase.ts ~ line 27 ~ .then ~ user", user)
+  }).then(() => {
+    dispatch(
+      updateUserProfile({
+        displayName: name
+      })
+    )
   }).catch((error) => {
     console.log("🚀 ~ file: firebase.ts ~ line 51 ~ updateUser ~ error", error)
   });
@@ -127,16 +131,17 @@ export const googleLogin = () => {
 }
 
 /**
- * 
+ * chatメッセージ送信
  * @param name 
  * @param message 
  */
-export const createDataInFirebase = async (name: string, message: string) => {
+export const createDataInFirebase = async (name: string, message: string, photoUrl: string) => {
   console.log('firebase start', name, message)
   try {
     const docRef = await addDoc(collection(db, "messages"), {
-      name: name,
-      message: message,
+      name,
+      message,
+      photoUrl,
       time: serverTimestamp()
     });
     console.log("Document written with ID:", docRef.id);
@@ -144,4 +149,17 @@ export const createDataInFirebase = async (name: string, message: string) => {
     console.log('firebase start2')
     console.error("Error adding document: ", e);
   }
+}
+
+export const resetPassword = (email: string) => {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      console.log("パスワードをリセットしました。")
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      console.log("🚀 ~ file: firebase.ts ~ line 142 ~ resetPassword ~ errorCode", errorCode)
+      const errorMessage = error.message;
+      console.log("🚀 ~ file: firebase.ts ~ line 144 ~ resetPassword ~ errorMessage", errorMessage)
+    });
 }

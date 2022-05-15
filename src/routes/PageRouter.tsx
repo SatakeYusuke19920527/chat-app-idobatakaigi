@@ -4,10 +4,12 @@ import KeLogin from '../pages/KeLogin';
 import UtLogin from '../pages/UtLogin';
 import JuLogin from '../pages/JuLogin';
 import SaLogin from '../pages/SaLogin';
+import WkLogin from '../pages/WkLogin';
 import SaChat from '../pages/SaChat';
 import JuChat from '../pages/JuChat';
 import UtChat from '../pages/UtChat';
 import KeChat from '../pages/KeChat';
+import WkChat from '../pages/WkChat';
 const PageRouter = () => {
   return (
     <Router>
@@ -24,6 +26,9 @@ const PageRouter = () => {
 
         <Route path="/salogin" element={<SaLogin />} />
         <Route path="/sachat" element={<SaChat />} />
+
+        <Route path="/wklogin" element={<WkLogin />} />
+        <Route path="/wkchat" element={<WkChat />} />
       </Routes>
     </Router>
   );
