@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import KeLayout from "../components/LayoutKe";
 import { useNavigate } from "react-router-dom";
 import { Button, FormControl, Input, InputLabel } from "@mui/material";
-import { loginUser, loginUserKe } from "../plugins/firebase";
+import { loginUserKe } from "../plugins/firebase";
 import { useLoginCheck } from "../hooks/useLoginCheck";
+import "../styles/KeLogin.css";
+import KeHeader from "../components/KeHeader";
 
 const KeLogin = () => {
   const [email, setEmail] = useState("");
@@ -36,42 +38,54 @@ const KeLogin = () => {
 
   return (
     <KeLayout>
-      <h1>Welcome to Keisuke's Chat Page</h1>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-      <div>
-        <FormControl>
-          <InputLabel htmlFor="email">メールアドレス</InputLabel>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </FormControl>
-      </div>
-      <div>
-        <FormControl>
-          <InputLabel htmlFor="password">パスワード</InputLabel>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </FormControl>
-      </div>
-      <Button
-        variant="contained"
-        onClick={() => {
-          login(email, password);
-        }}
-      >
-        ログイン
-      </Button>
+      <KeHeader />
+      <section className="login-wrapper">
+        <div className="root">
+          <div className="title">
+            <h1>WELCOME</h1>
+          </div>
+          <div>
+            <h5>-Keisuke's Chat Page- </h5>
+          </div>
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          <div className="item">
+            <FormControl>
+              <InputLabel htmlFor="email">メールアドレス</InputLabel>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setEmail(e.target.value);
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className="item">
+            <FormControl>
+              <InputLabel htmlFor="password">パスワード</InputLabel>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </FormControl>
+          </div>
+          <div className="item">
+            <Button
+              variant="contained"
+              onClick={() => {
+                login(email, password);
+              }}
+            >
+              ログイン
+            </Button>
+          </div>
+        </div>
+      </section>
     </KeLayout>
   );
 };
