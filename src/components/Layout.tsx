@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode } from 'react';
 
 import '../styles/Layout.css';
 const Layout = ({ children }: { children: ReactNode }) => {

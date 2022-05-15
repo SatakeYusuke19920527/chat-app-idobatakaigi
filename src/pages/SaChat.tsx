@@ -13,11 +13,12 @@ import MessageCard from '../components/MessageCard';
 import { useLoginCheck } from '../hooks/useLoginCheck';
 import { useNavigate } from 'react-router-dom';
 import "../styles/SaChat.css"
+import { MessageType } from '../types/MessageType';
 
 const SaChat = () => {
   const user: UserType = useAppSelector(selectUser);
   const [message, setMessage] = useState("");
-  const [chatData, setChatData] = useState<any[]>([])
+  const [chatData, setChatData] = useState<MessageType[]>([])
   const scrollBottomRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const isLogin = useLoginCheck();
@@ -29,9 +30,11 @@ const SaChat = () => {
   useEffect(() => {
     const q = query(collection(db, "messages"), orderBy("time", "asc"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const messagesInfo: any[] = [];
+      const messagesInfo: MessageType[] = [];
       querySnapshot.forEach((doc) => {
-        messagesInfo.push(doc.data());
+      console.log("🚀 ~ file: SaChat.tsx ~ line 35 ~ querySnapshot.forEach ~ doc", doc.data())
+        const tempDocData: MessageType = doc.data() as MessageType
+        messagesInfo.push(tempDocData);
       });
       setChatData(messagesInfo)
     });
@@ -40,6 +43,7 @@ const SaChat = () => {
   useLayoutEffect(() => {
     scrollBottomRef.current!.scrollIntoView({ behavior: 'smooth' });
   }, [chatData])
+  console.log(chatData)
   useEffect(() => {
     if (user.displayName === null) {
 
@@ -72,6 +76,7 @@ const SaChat = () => {
                     name={chat.name}
                     photoUrl={chat.photoUrl}
                     message={chat.message}
+                    serverTime={chat.time}
                   />
                 )
               })
