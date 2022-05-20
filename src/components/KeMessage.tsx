@@ -2,26 +2,36 @@ import { Box } from "@mui/material";
 import "../styles/KeMessage.css";
 
 export interface KeMessageProps {
-  key: number;
   createdBy: string;
   content: string;
   createdAt: number;
+  isOwnMessage: boolean;
 }
 
 const KeMessage = (props: KeMessageProps) => {
-  const key = props.key;
   const createdBy = props.createdBy;
   const content = props.content;
   const createdAt = props.createdAt;
+  const isOwnMessage = props.isOwnMessage;
 
   return (
-    <div className="message-wrapper">
-      <ul key={key}>
+    <div className="root">
+      <div
+        className={
+          isOwnMessage ? "message-wrapper-own" : "message-wrapper-others"
+        }
+      >
         <div className="createdBy">{createdBy}</div>
-        <Box sx={{ borderColor: "grey.500", borderRadius: "16px" }}>
-          <div className="content">{content}</div>
+        <Box
+          className="content"
+          sx={{
+            backgroundColor: "#dbebc4",
+            borderRadius: "10px",
+          }}
+        >
+          {content}
         </Box>
-      </ul>
+      </div>
     </div>
   );
 };

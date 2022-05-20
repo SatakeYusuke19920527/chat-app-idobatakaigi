@@ -23,8 +23,11 @@ const KeChat = () => {
     fetch();
   }, [messages]);
 
-  const send = async (content: string, createdBy: string) => {
+  const send = async (content: string) => {
     const createdAt = Date.now();
+    // TODO: ユーザ情報から取得する
+    const createdBy = "Keisuke Watanabe";
+
     const message: Message = {
       content: content,
       createdBy: createdBy,

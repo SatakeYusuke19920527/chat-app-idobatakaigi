@@ -19,7 +19,7 @@ const KeHeader = () => {
               logoutUser();
             }}
           >
-            サインアウト
+            Sign Out
           </Button>
         </div>
       )}

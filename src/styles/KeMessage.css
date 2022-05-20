@@ -1,12 +1,25 @@
-.message-wrapper {
-    width: 100%;
-    list-style: none;
+.root {
+    padding: 10px 0px 10px 0px;
+}
+.message-wrapper-others {
+    text-align: start;
+    max-width: 40vw;
+}
+.message-wrapper-own {
+    text-align: end;
+    max-width: 40vw;
 }
 .createdBy {
-    font-size: 5px;
-    color: #a9a9a9;
+    font-size: 13px;
+    color: #696969;
+    text-align: start;
 }
 .content {
-    font-size: 10px;
+    padding: 5px 10px 5px 10px;
+    font-size: 15px;
+    max-height: 30vh;
+    overflow-y: auto;
+    overflow-wrap: break-word;
     color: #000000;
+    text-align: start;
 }
