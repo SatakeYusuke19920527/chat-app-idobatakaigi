@@ -74,7 +74,7 @@ export const loginUser = async (email: string, password: string) => {
       console.log("🚀 ~ file: firebase.ts ~ line 61 ~ loginUser ~ errorMessage", errorMessage)
     });
 };
-
+  
 export const loginUserKe = async (email: string, password: string): Promise<string> => {
   let returnObj: string = ""
   await signInWithEmailAndPassword(auth, email, password)
