@@ -1,0 +1,23 @@
+.message-area-wrapper {
+    height: 85vh;
+    position: relative;
+    text-align: center;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+}
+.sender-area {
+    max-height: 20vh;
+    min-height: 10vh;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: #98fb98;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.text-area {
+    margin-right: 10px;
+    width: 50%;
+    overflow-wrap: break-word;
+}

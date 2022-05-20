@@ -1,0 +1,22 @@
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 2px solid #cdcdcd; */
+}
+.root {
+    padding-top: 10%;
+}
+.title {
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
